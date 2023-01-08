@@ -1,0 +1,5 @@
+abcdefghijklmnopqrstuvwxyz äöü
+ABCDEFGHIJKLMNOPQRSTUVWXYZ ÄÖÜ
+1234567890
+!"§$%&/()=?ß´`^°@#+*-_.,:;
+¹²³⁴⁵⁶⁷⁸⁹⁰
