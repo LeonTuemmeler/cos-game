@@ -1,6 +1,5 @@
-using System;
 using System.Collections;
-using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
@@ -14,6 +13,14 @@ public enum GlobalText
     Right,
     Bottom,
     Top
+}
+
+[System.Serializable]
+struct Routine
+{
+    public string Enumerator;
+    public int sceneId;
+    public int endSceneId;
 }
 
 public class GlobalTextManager : MonoBehaviour
@@ -39,18 +46,44 @@ public class GlobalTextManager : MonoBehaviour
     [SerializeField] private TMP_Text rightText;
     [SerializeField] private TMP_Text centerText;
     [SerializeField] private TMP_Text fullCenterText;
+    
+    [SerializeField] private Routine[] _routines;
+    private Routine _currentRoutine = new Routine();
 
     private void LoadCutscenes()
     {
         int scene = SceneManager.GetActiveScene().buildIndex;
+        var routine = _routines.First(x => x.sceneId == scene);
+
+        if (routine.Enumerator == null)
+            return;
         
-        if(scene == 1)
-            Introduction();
+        _currentRoutine = routine;
+        SetText(GlobalText.Bottom, "Drück X um die Szene zu überspringen");
+        StartCoroutine(routine.Enumerator);
     }
     
     private void Start()
     {
         LoadCutscenes();
+    }
+
+    private void Update()
+    {
+        if (Input.GetButtonDown("SkipCutscene") && _currentRoutine.Enumerator != null)
+        {
+            StopCoroutine(_currentRoutine.Enumerator);
+            _currentRoutine.Enumerator = null;
+            
+            ResetText(GlobalText.FullCenter);
+            ResetText(GlobalText.Center);
+            ResetText(GlobalText.Left);
+            ResetText(GlobalText.Right);
+            ResetText(GlobalText.Top);
+            ResetText(GlobalText.Bottom);
+
+            SceneManager.LoadScene(_currentRoutine.endSceneId);
+        }
     }
 
     public TMP_Text GetText(GlobalText display)
@@ -230,6 +263,11 @@ public class GlobalTextManager : MonoBehaviour
     {
         StartCoroutine(IIntroduction());
     }
+
+    public void Thanks()
+    {
+        StartCoroutine(IThanks());
+    }
     
     private IEnumerator IIntroduction()
     {
@@ -254,5 +292,30 @@ public class GlobalTextManager : MonoBehaviour
         yield return CoroutineHelpers.GetWait(1f);
 
         SceneManager.LoadScene(2);
+    }
+
+    private IEnumerator IThanks()
+    {
+        float inbetweenText = 5f;
+        
+        SetText(GlobalText.FullCenter, "cos(<i>game</i>) war zuerst ein kleiner Egoshooter, den ich als kleines Nebenprojekt gemacht habe.", true, true);
+        yield return CoroutineHelpers.GetWait(inbetweenText);
+        
+        SetText(GlobalText.FullCenter, "Aber jetzt ist es viel mehr als nur ein kleiner Shooter.", true, true);
+        yield return CoroutineHelpers.GetWait(inbetweenText);
+        
+        SetText(GlobalText.FullCenter, "Es ist mein Weg um zu zeigen, wie man die Mathematik in der realen Welt anwenden kann.", true, true);
+        yield return CoroutineHelpers.GetWait(inbetweenText);
+
+        SetText(GlobalText.FullCenter, "Ich hoffe, dass es dir gefallen hat.", true, true);
+        yield return CoroutineHelpers.GetWait(inbetweenText);
+        
+        SetText(GlobalText.FullCenter, "Den Quellcode kannst du unter https://github.com/LeonTuemmeler/cos-game finden.", true, true);
+        yield return CoroutineHelpers.GetWait(inbetweenText);
+        
+        yield return AnimateText(GlobalText.FullCenter, "Danke fürs spielen!", 2f, Color.white, 11f, true, true).Result;
+        yield return CoroutineHelpers.GetWait(2f);
+        
+        SceneManager.LoadScene(0);
     }
 }
