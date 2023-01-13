@@ -49,7 +49,6 @@ public class CircularObstacle : MonoBehaviour
     }
 }
 
-#if UNITY_EDITOR
 [CustomEditor(typeof(CircularObstacle))]
 [CanEditMultipleObjects]
 public class CircularObstacleEditor : Editor
@@ -58,12 +57,21 @@ public class CircularObstacleEditor : Editor
     {
         var t = target as CircularObstacle;
         var tr = t.transform;
-
+        
         Handles.color = t.circleColor;
         Handles.DrawWireDisc(tr.position, tr.up, t.radius);
 
         Handles.color = t.obstacleColor;
         Handles.DrawWireCube(t.GetPoint(t.gizmoObstacleValue), t.obstacleSize);
+        
+        // Draw text with an outline
+        Handles.Label(t.GetPoint(t.gizmoObstacleValue), t.name, new GUIStyle
+        {
+            normal = new GUIStyleState
+            {
+                textColor = Color.black,
+                background = Texture2D.whiteTexture
+            }
+        });
     }
 }
-#endif

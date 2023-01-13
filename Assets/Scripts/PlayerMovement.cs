@@ -23,6 +23,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private LayerMask groundLayer;
     
     private bool _isGrounded;
+    private bool _jumpAllowed = true;
     
     [Header("Gravity")]
     [SerializeField] private float gravity = -9.81f;
@@ -60,6 +61,11 @@ public class PlayerMovement : MonoBehaviour
     public void ResetTerminalVelocity()
     {
         terminalVelocity = _terminalVelocityOriginal;
+    }
+
+    public void ToggleJump(bool canJump)
+    {
+        _jumpAllowed = canJump;
     }
     
     private void Update()
@@ -104,7 +110,7 @@ public class PlayerMovement : MonoBehaviour
         _yVelocity = _yVelocity < terminalVelocity ? terminalVelocity : _yVelocity;
         
         // Springen
-        if (Input.GetButton("Jump") && _isGrounded)
+        if (Input.GetButton("Jump") && _isGrounded && _jumpAllowed)
         {
             _yVelocity = jumpForce;
         }

@@ -17,4 +17,9 @@ public class TitleScreen : MonoBehaviour
     {
         Application.Quit();
     }
+
+    public void ToggleAssist(bool toggle)
+    {
+        AssistMode.ToggleAssistMode(toggle);
+    }
 }
