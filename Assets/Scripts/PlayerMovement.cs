@@ -45,6 +45,11 @@ public class PlayerMovement : MonoBehaviour
             throw new NullReferenceException("Ground Check is null!");
 
         _terminalVelocityOriginal = terminalVelocity;
+
+        if (!AssistMode.GetAssistMode())
+            return;
+        
+        GlobalTextManager.Instance.SetText(GlobalText.Bottom, "- <color #00ff00>ASSIST MODE</color> -");
     }
 
     private bool IsGrounded()
