@@ -49,6 +49,7 @@ public class CircularObstacle : MonoBehaviour
     }
 }
 
+#if UNITY_EDITOR
 [CustomEditor(typeof(CircularObstacle))]
 [CanEditMultipleObjects]
 public class CircularObstacleEditor : Editor
@@ -75,3 +76,4 @@ public class CircularObstacleEditor : Editor
         });
     }
 }
+#endif
